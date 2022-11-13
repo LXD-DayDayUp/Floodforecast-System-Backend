@@ -5,7 +5,9 @@ import com.example.entity.Permission;
 import com.example.entity.User;
 import com.example.entity.UserInfo;
 import com.example.utils.JwtUtils;
+import com.example.utils.MenuTree;
 import com.example.utils.Result;
+import com.example.vo.RouterVo;
 import com.example.vo.TokenVo;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.ObjectUtils;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sysUser")
@@ -34,6 +37,8 @@ public class SysUserController {
 
     /**
      * 刷新token
+     * @param request
+     * @return
      */
     @PostMapping("/refreshToken")
     public Result refreshToken(HttpServletRequest request) {
@@ -58,7 +63,10 @@ public class SysUserController {
 
     }
 
-    /*** 获取用户信息 ** @return */
+    /**
+     * 获取用户信息
+     * @return
+     */
     @GetMapping("/getInfo")
     public Result getInfo() {
         //从Spring Security上下文获取用户信息
@@ -74,10 +82,16 @@ public class SysUserController {
         //获取角色权限编码字段
         Object[] roles = permissionList.stream() .filter(Objects::nonNull) .map(Permission::getCode).toArray();
         //创建用户信息对象
-        UserInfo userInfo = new UserInfo(user.getId(),user.getNick_name(),null,null,roles);
+        UserInfo userInfo = new UserInfo(user.getId(),user.getNick_name(), user.getAvatar(), "I am a student! zl",roles);
         //返回数据
         return Result.ok(userInfo).message("用户信息查询成功"); }
 
+    /**
+     * 用户登出
+     * @param request
+     * @param response
+     * @return
+     */
     @PostMapping("/logout")
     public Result logout(HttpServletRequest request, HttpServletResponse response) {
         //获取token
@@ -96,5 +110,24 @@ public class SysUserController {
             return Result.ok().message("用户退出成功");
         }
         return Result.ok().message("用户退出失败");
+    }
+
+    @GetMapping("/getMenuList")
+    public Result getMenuList() {
+        //从Spring Security上下文获取用户信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //获取用户信息
+        User user = (User) authentication.getPrincipal();
+        //获取相应的权限
+        List<Permission> permissionList = user.getPermissionList();
+        //筛选目录和菜单
+        List<Permission> collect = permissionList.stream()
+//                只筛选目录和菜单数据
+                .filter(item -> item != null && item.getType() !=2)
+                .collect(Collectors.toList());
+        //生成路由数据
+        List<RouterVo> routerVoList = MenuTree.makeRouter(collect, 0L);
+        //返回数据
+        return Result.ok(routerVoList).message("菜单数据获取成功");
     }
 }

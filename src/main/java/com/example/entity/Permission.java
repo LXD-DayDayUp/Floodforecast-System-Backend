@@ -43,12 +43,12 @@ public class Permission implements Serializable {
     /**
      * 父权限ID
      */
-    private Long parent_id;
+    private Long parentId;
 
     /**
      * 父权限名称
      */
-    private String parent_name;
+    private String parentName;
 
     /**
      * 授权标识符
@@ -83,12 +83,12 @@ public class Permission implements Serializable {
     /**
      * 创建时间
      */
-    private Date create_time;
+    private Date createTime;
 
     /**
      * 修改时间
      */
-    private Date update_time;
+    private Date updateTime;
 
     /**
      * 备注
@@ -98,12 +98,12 @@ public class Permission implements Serializable {
     /**
      * 排序
      */
-    private Integer order_num;
+    private Integer orderNum;
 
     /**
      * 是否删除(0-未删除，1-已删除)
      */
-    private Integer is_delete;
+    private Integer isDelete;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @TableField(exist = false)

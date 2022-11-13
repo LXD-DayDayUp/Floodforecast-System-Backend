@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.dao.CMQMapper;
 import com.example.dao.GengzhangMapper;
 import com.example.entity.Gengzhang;
 import com.example.entity.Modelpar;
@@ -20,59 +21,52 @@ class Springdemo2ApplicationTests {
     private ModelparService modelparService;
     @Resource
     private GengzhangMapper gengzhangMapper;
+
+    @Resource
+    private CMQMapper cmqMapper;
     @Autowired
     private RainfallService rainfallService;
+
     @Test
     void testGetAll() {
-//        需要分析的参数有哪些？峰现时间、洪水总量、洪水峰值，纳什效率系数NSE
-        Modelpar mp=modelparService.selectParByID(4);
-        ModelEvaluation me=new ModelEvaluation();
-        List<Gengzhang> gengzhangList=gengzhangMapper.selectPEByDate("20160101","20161231");
-        int n=gengzhangList.size();
-        double[] P=new double[n];
-        double[] EI=new double[n];
-        double[] MQ=new double[n];
-        double[] CQ=new double[n];
+//        小论文率定了K、SM、CS、KSS、KG、KKSS、KKG
+//        SM影响洪峰流量大小，SM越大洪峰流量越小
+//       K影响模型产流量
+//        河网蓄水消退系数CS影响洪峰
+//        需要分析的参数有哪些？峰现时间、洪水总量、洪水峰值，
+//        for (int j = 1; j < 7; j++) {
+        ModelEvaluation me = new ModelEvaluation();
+        Modelpar mp = modelparService.selectParByID(0);
+        List<Gengzhang> gengzhangList = gengzhangMapper.selectPEByDate("20160101", "20161231");
+        int n = gengzhangList.size();
+        String[] Date = new String[n];
+        double[] P = new double[n];
+        double[] EI = new double[n];
+        double[] MQ = new double[n];
+        double[] CQ = new double[n];
         for (int i = 0; i < n; i++) {
-            P[i]=gengzhangList.get(i).getP();
-            EI[i]=gengzhangList.get(i).getEI();
-            MQ[i]=gengzhangList.get(i).getMQ();
+            Date[i] = String.valueOf(gengzhangList.get(i).getHyDate());
+            P[i] = gengzhangList.get(i).getP();
+            EI[i] = gengzhangList.get(i).getEI();
+            MQ[i] = gengzhangList.get(i).getMQ();
         }
-        computerxaj cxaj=new computerxaj();
-        CQ=cxaj.computeQ(mp,P,EI);
-        //        洪水峰值
-        double CQMAX=0;
-        double MQMAX=0;
+        computerxaj cxaj = new computerxaj();
+        CQ = cxaj.computeQ(mp, P, EI);
+        double F=0;
+        double item=0;
         for (int i = 0; i < CQ.length; i++) {
-            if (CQMAX<CQ[i]){
-                CQMAX=CQ[i];
-            }
-            if (MQMAX<MQ[i]){
-                MQMAX=MQ[i];
+            F+=CQ[i];
+            if (item<CQ[i]){
+                item=CQ[i];
             }
         }
-        System.out.println("预报峰值为："+CQMAX);
-        System.out.println("实测峰值为："+MQMAX);
-//        峰现时间
-        for (int i = 0; i < CQ.length; i++) {
-            if (CQMAX==CQ[i]){
-                System.out.println(i);
-            }
-            if (MQMAX==MQ[i]){
-                System.out.println(i);
-            }
-        }
-//        洪水总量
-        long CQSUM=0;
-        long MQSUM=0;
-        for (int i = 0; i < CQ.length; i++) {
-            CQSUM+=CQ[i]*24*60*60;
-            MQSUM+=MQ[i]*24*60*60;
-        }
-        System.out.println("预报洪量为："+CQSUM);
-        System.out.println("实测洪量为："+MQSUM);
-//        纳什效率系数
-        double NSE= ModelEvaluation.NashSutcliffeEfficiency(MQ,CQ);
-        System.out.println("纳什效率系数"+NSE);
+        System.out.println(item);
+        System.out.println(F);
+        double NSE=me.NashSutcliffeEfficiency(MQ,CQ);
+        System.out.println(NSE);
+//        for (int z = 0; z < Date.length; z++) {
+//            cmqMapper.update(CQ[z], Date[z]);
+//        }
+//        }
     }
 }

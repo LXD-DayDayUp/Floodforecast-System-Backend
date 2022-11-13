@@ -30,15 +30,18 @@ public class CustomerUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-
         //    查询用户拥有的权限列表
         List<Permission> permissionList = permissionService.findPermissionListByUserId(user.getId());
 //        获取权限编码
-        List<String> collect=permissionList.stream().filter(Objects::nonNull).map(Permission::getCode).filter(Objects::nonNull).collect(Collectors.toList());
+        List<String> collect = permissionList.stream()
+                .filter(Objects::nonNull)
+                .map(Permission::getCode)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()) ;
 //        转换成数组
-        String[] strings=collect.toArray(new String[0]);
+        String[] strings = collect.toArray(new String[collect.size()]);
 //        设置权限列表
-        List<GrantedAuthority> authorities= AuthorityUtils.createAuthorityList(strings);
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(strings);
         user.setAuthorities(authorities);
 //        设置菜单列表
         user.setPermissionList(permissionList);
