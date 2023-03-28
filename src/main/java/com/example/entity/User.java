@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.List;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author LXD
@@ -69,22 +70,24 @@ public class User implements Serializable , UserDetails {
     /**
      * 真实姓名
      */
-    private String real_name;
+    private String realName;
 
     /**
      * 昵称
      */
-    private String nick_name;
+
+    private String nickName;
 
     /**
      * 所属部门ID
      */
-    private Long department_id;
+    private Long departmentId;
 
     /**
      * 所属部门名称
      */
-    private String department_name;
+    @TableField("department_name")
+    private String departmentName;
 
     /**
      * 性别(0-男，1-女)
@@ -109,22 +112,22 @@ public class User implements Serializable , UserDetails {
     /**
      * 是否是管理员(1-管理员)
      */
-    private Integer is_admin;
+    private Integer isAdmin;
 
     /**
      * 创建时间
      */
-    private Date create_time;
+    private LocalDate createTime;
 
     /**
      * 修改时间
      */
-    private Date update_time;
+    private LocalDate updateTime;
 
     /**
      * 是否删除(0-未删除，1-已删除)
      */
-    private Integer is_delete;
+    private Integer isDelete;
 
 
     @TableField(exist = false)

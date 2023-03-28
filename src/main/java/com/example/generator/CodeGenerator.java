@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
 public class CodeGenerator {
     public static void main(String[] args) {
@@ -52,9 +53,10 @@ public class CodeGenerator {
 //        策略设置
         StrategyConfig strategyConfig=new StrategyConfig();
 //        设置当前参与生成的表名，参数为可变参数
-        strategyConfig.setInclude("sys_permission");
-//        设置数据库表的前缀名称，模块名=数据库表名-前缀名，例如：User=tbl_user-tbl
+        strategyConfig.setInclude("sys_floodprogram");
+//        设置数据库表的前缀名称，模块名=数据库表名-前缀名，例如：User=tbl_user-tbl_
         strategyConfig.setTablePrefix("sys_");
+        strategyConfig.setNaming(NamingStrategy.underline_to_camel); // 数据库字段下划线转驼峰命令策略
 //        设置是否启用Rest风格
         strategyConfig.setRestControllerStyle(true);
 //        设置乐观锁字段名

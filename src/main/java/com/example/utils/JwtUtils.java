@@ -19,7 +19,7 @@ public class JwtUtils {
     private String secret="qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm";
 
     // 过期时间
-    private long expiration=24*60*6000;
+    private long expiration=30*24*60*60;
 
 
     /**

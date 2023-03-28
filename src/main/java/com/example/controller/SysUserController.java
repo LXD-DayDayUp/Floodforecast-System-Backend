@@ -37,6 +37,7 @@ public class SysUserController {
 
     /**
      * 刷新token
+     *
      * @param request
      * @return
      */
@@ -53,11 +54,11 @@ public class SysUserController {
             reToken = jwtUtils.refreshToken(token);
         }
         long expireTime = Jwts.parser().setSigningKey(jwtUtils.getSecret()).parseClaimsJws(reToken.replace("jwt_", "")).getBody().getExpiration().getTime();
-        String oldTokenKey="token_"+token;
+        String oldTokenKey = "token_" + token;
         redisService.del(oldTokenKey);
-        String newTokenKey="token_"+reToken;
-        redisService.set(newTokenKey,reToken, jwtUtils.getExpiration()/1000);
-        TokenVo tokenVo=new TokenVo(expireTime,reToken);
+        String newTokenKey = "token_" + reToken;
+        redisService.set(newTokenKey, reToken, jwtUtils.getExpiration() / 1000);
+        TokenVo tokenVo = new TokenVo(expireTime, reToken);
         System.out.println("token刷新成功");
         return Result.ok(tokenVo).message("token刷新成功");
 
@@ -65,6 +66,7 @@ public class SysUserController {
 
     /**
      * 获取用户信息
+     *
      * @return
      */
     @GetMapping("/getInfo")
@@ -80,14 +82,16 @@ public class SysUserController {
         //用户权限集合
         List<Permission> permissionList = user.getPermissionList();
         //获取角色权限编码字段
-        Object[] roles = permissionList.stream() .filter(Objects::nonNull) .map(Permission::getCode).toArray();
+        Object[] roles = permissionList.stream().filter(Objects::nonNull).map(Permission::getCode).toArray();
         //创建用户信息对象
-        UserInfo userInfo = new UserInfo(user.getId(),user.getNick_name(), user.getAvatar(), "I am a student! zl",roles);
+        UserInfo userInfo = new UserInfo(user.getId(), user.getUsername(), user.getPassword(), user.getAvatar(), roles);
         //返回数据
-        return Result.ok(userInfo).message("用户信息查询成功"); }
+        return Result.ok(userInfo).message("用户信息查询成功");
+    }
 
     /**
      * 用户登出
+     *
      * @param request
      * @param response
      * @return
@@ -106,7 +110,8 @@ public class SysUserController {
             //清空用户信息
             new SecurityContextLogoutHandler().logout(request, response, authentication);
             //清空redis里面的token
-            String key = "token_" + token; redisService.del(key);
+            String key = "token_" + token;
+            redisService.del(key);
             return Result.ok().message("用户退出成功");
         }
         return Result.ok().message("用户退出失败");
@@ -123,7 +128,7 @@ public class SysUserController {
         //筛选目录和菜单
         List<Permission> collect = permissionList.stream()
 //                只筛选目录和菜单数据
-                .filter(item -> item != null && item.getType() !=2)
+                .filter(item -> item != null && item.getType() != 2)
                 .collect(Collectors.toList());
         //生成路由数据
         List<RouterVo> routerVoList = MenuTree.makeRouter(collect, 0L);

@@ -51,5 +51,16 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 //        把生成的token存到redis中
         String tokenKey="token_"+token;
         redisService.set(tokenKey,token,jwtUtils.getExpiration()/1000);
+//        //设置客户端的响应的内容类型
+//        response.setContentType("application/json;charset=UTF-8");
+//        //获取当登录用户信息
+//        User user = (User) authentication.getPrincipal();
+//        //消除循环引用
+//        String result = JSON.toJSONString(user, SerializerFeature.DisableCircularReferenceDetect);
+//        //获取输出流
+//        ServletOutputStream outputStream = response.getOutputStream();
+//        outputStream.write(result.getBytes(StandardCharsets.UTF_8));
+//        outputStream.flush();
+//        outputStream.close();
     }
 }

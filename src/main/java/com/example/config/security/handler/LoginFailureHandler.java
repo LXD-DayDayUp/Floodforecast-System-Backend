@@ -3,13 +3,11 @@ package com.example.config.security.handler;
 import com.alibaba.fastjson2.JSON;
 import com.example.config.security.exception.CustomerAuthenticationException;
 import com.example.utils.Result;
-import com.example.utils.ResultCode;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,13 +18,13 @@ import java.nio.charset.StandardCharsets;
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 //        设置客户端响应编码格式
         response.setContentType("application/json;charset=UTF-8");
 //        获取输出流
         ServletOutputStream outputStream = response.getOutputStream();
 //        提示信息
-        String message = null;
+        String message=null;
 //        错误编码
         int code = 500;
 //        判断异常类型
